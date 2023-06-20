@@ -18,7 +18,7 @@
         </license>
     </licenses>
     <scm>
-        <url>https://github.com/q3769/coco4j/tree/main</url>
+        <url>https://github.com/q3769/coco4j/tree/master</url>
         <connection>
             scm:git:git://github.com:q3769/coco4j.git
         </connection>
