@@ -26,26 +26,52 @@
 package coco4j;
 
 import lombok.NonNull;
-import org.awaitility.Awaitility;
-import org.awaitility.core.ConditionFactory;
 
 import java.time.Duration;
+
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 /**
  *
  */
 public class MoreAwaitilities {
-
-    private static final ConditionFactory awaitForever = Awaitility.await().forever();
-
     private MoreAwaitilities() {
     }
 
     /**
      * @param duration
-     *         to suspend the current thread for
+     *         the current thread to be sleeping for
      */
-    public static void suspend(@NonNull Duration duration) {
-        awaitForever.with().pollDelay(duration).until(() -> true);
+    public static void sleepInterruptibly(@NonNull Duration duration) {
+        try {
+            NANOSECONDS.sleep(duration.toNanos());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    /**
+     * @param duration
+     *         the current thread to be sleeping for
+     */
+    public static void sleepUninterruptibly(@NonNull Duration duration) {
+        boolean interrupted = false;
+        try {
+            long remainingNanos = duration.toNanos();
+            long end = System.nanoTime() + remainingNanos;
+            while (true) {
+                try {
+                    NANOSECONDS.sleep(remainingNanos);
+                    return;
+                } catch (InterruptedException e) {
+                    interrupted = true;
+                    remainingNanos = end - System.nanoTime();
+                }
+            }
+        } finally {
+            if (interrupted) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 }
