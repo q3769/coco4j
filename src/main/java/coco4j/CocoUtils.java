@@ -27,16 +27,29 @@ package coco4j;
 
 import lombok.NonNull;
 
+import javax.annotation.Nonnull;
 import java.time.Duration;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.Semaphore;
+import java.util.function.Supplier;
 
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
-/**
- *
- */
-public class MoreAwaitilities {
-    private MoreAwaitilities() {
+public class CocoUtils {
+    private CocoUtils() {
+    }
+
+    public static <V> V callUnchecked(Callable<V> task) {
+        try {
+            return task.call();
+        } catch (Exception e) {
+            throw new CompletionException(e);
+        }
+    }
+
+    public static @Nonnull <V> Supplier<V> supplyByUnchecked(Callable<V> callable) {
+        return () -> callUnchecked(callable);
     }
 
     /**
