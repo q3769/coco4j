@@ -28,6 +28,7 @@ package coco4j;
 import lombok.NonNull;
 
 import java.time.Duration;
+import java.util.concurrent.Semaphore;
 
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
@@ -72,6 +73,14 @@ public class MoreAwaitilities {
             if (interrupted) {
                 Thread.currentThread().interrupt();
             }
+        }
+    }
+
+    public static void acquireInterruptibly(@NonNull Semaphore semaphore) {
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 }
