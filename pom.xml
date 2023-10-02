@@ -31,7 +31,7 @@
 
     <groupId>io.github.q3769</groupId>
     <artifactId>coco4j</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <packaging>jar</packaging>
     <name>coco4j</name>
     <description>Common concurrent API utils for Java</description>
@@ -66,6 +66,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
