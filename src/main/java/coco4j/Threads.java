@@ -26,42 +26,101 @@
 package coco4j;
 
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
-import lombok.NonNull;
+
 import java.time.Duration;
+import java.util.concurrent.CompletionException;
+import lombok.NonNull;
+import lombok.SneakyThrows;
 
 public class Threads {
     private Threads() {}
 
     /**
+     * Interruptible during sleep, in which case throws unchecked CompletionException wrapping the InterruptedException
+     *
      * @param duration the current thread to be sleeping for
+     * @throws CompletionException if interrupted
      */
-    public static void sleepCurrentInterruptibly(@NonNull Duration duration) {
+    public static void sleepInterruptiblyUnchecked(@NonNull Duration duration) {
         try {
             NANOSECONDS.sleep(duration.toNanos());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            throw new CompletionException(e);
         }
     }
 
     /**
+     * Interruptible during sleep, in which case the InterruptedException thrown is uncheckable/un-catchable
+     * programmatically
+     *
+     * @param duration the current thread to sleep for
+     * @throws InterruptedException thrown to JVM runtime, un-catchable programmatically
+     */
+    @SneakyThrows(InterruptedException.class)
+    public static void sleepInterruptiblyUncheckable(@NonNull Duration duration) {
+        NANOSECONDS.sleep(duration.toNanos());
+    }
+
+    /**
+     * Uninterruptible during sleep. If interruption attempts/<code>InterruptedException</code>s happened during sleep,
+     * the last of such InterruptedException will be wrapped in an unchecked CompletionException that is thrown after
+     * the sleep completes.
+     *
      * @param duration the current thread to be sleeping for
      */
-    public static void sleepCurrentUninterruptibly(@NonNull Duration duration) {
-        boolean interrupted = false;
+    public static void sleepUninterruptiblyUnchecked(@NonNull Duration duration) {
+        InterruptedException interrupted = null;
         try {
             long remainingNanos = duration.toNanos();
             long end = System.nanoTime() + remainingNanos;
             while (true) {
                 try {
                     NANOSECONDS.sleep(remainingNanos);
-                    return;
+                    break;
                 } catch (InterruptedException e) {
-                    interrupted = true;
+                    interrupted = e;
                     remainingNanos = end - System.nanoTime();
                 }
             }
+            if (interrupted != null) {
+                throw new CompletionException(interrupted);
+            }
         } finally {
-            if (interrupted) {
+            if (interrupted != null) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    /**
+     * Uninterruptible during sleep. If interruption attempts/<code>InterruptedException</code>s happened during sleep,
+     * the last of such InterruptedException, uncheckable/un-catchable programmatically, will be thrown to the JVM
+     * runtime after the sleep completes.
+     *
+     * @param duration the current thread to be sleeping for
+     * @throws InterruptedException thrown to JVM runtime, un-catchable programmatically
+     */
+    @SneakyThrows
+    public static void sleepUninterruptiblyUncheckable(@NonNull Duration duration) {
+        InterruptedException interrupted = null;
+        try {
+            long remainingNanos = duration.toNanos();
+            long end = System.nanoTime() + remainingNanos;
+            while (true) {
+                try {
+                    NANOSECONDS.sleep(remainingNanos);
+                    break;
+                } catch (InterruptedException e) {
+                    interrupted = e;
+                    remainingNanos = end - System.nanoTime();
+                }
+            }
+            if (interrupted != null) {
+                throw interrupted;
+            }
+        } finally {
+            if (interrupted != null) {
                 Thread.currentThread().interrupt();
             }
         }

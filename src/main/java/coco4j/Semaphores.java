@@ -25,17 +25,25 @@
 
 package coco4j;
 
-import lombok.NonNull;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.Semaphore;
+import lombok.NonNull;
+import lombok.SneakyThrows;
 
 public class Semaphores {
     private Semaphores() {}
 
-    public static void acquireInterruptibly(@NonNull Semaphore semaphore) {
+    @SneakyThrows
+    public static void acquireInterruptiblyUncheckable(@NonNull Semaphore semaphore) {
+        semaphore.acquire();
+    }
+
+    public static void acquireInterruptiblyUnchecked(@NonNull Semaphore semaphore) {
         try {
             semaphore.acquire();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            throw new CompletionException(e);
         }
     }
 }
