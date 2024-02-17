@@ -27,34 +27,15 @@ package coco4j;
 
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import lombok.NonNull;
-import lombok.SneakyThrows;
-import javax.annotation.Nonnull;
 import java.time.Duration;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.Semaphore;
-import java.util.function.Supplier;
 
-public class CocoUtils {
-    private CocoUtils() {}
-
-    public static <V> V callUnchecked(Callable<V> task) {
-        try {
-            return task.call();
-        } catch (Exception e) {
-            throw new CompletionException(e);
-        }
-    }
-
-    public static @Nonnull <V> Supplier<V> supplyByUnchecked(Callable<V> callable) {
-        return () -> callUnchecked(callable);
-    }
+public class Threads {
+    private Threads() {}
 
     /**
      * @param duration the current thread to be sleeping for
      */
-    public static void sleepInterruptibly(@NonNull Duration duration) {
+    public static void sleepCurrentInterruptibly(@NonNull Duration duration) {
         try {
             NANOSECONDS.sleep(duration.toNanos());
         } catch (InterruptedException e) {
@@ -65,7 +46,7 @@ public class CocoUtils {
     /**
      * @param duration the current thread to be sleeping for
      */
-    public static void sleepUninterruptibly(@NonNull Duration duration) {
+    public static void sleepCurrentUninterruptibly(@NonNull Duration duration) {
         boolean interrupted = false;
         try {
             long remainingNanos = duration.toNanos();
@@ -84,18 +65,5 @@ public class CocoUtils {
                 Thread.currentThread().interrupt();
             }
         }
-    }
-
-    public static void acquireInterruptibly(@NonNull Semaphore semaphore) {
-        try {
-            semaphore.acquire();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    @SneakyThrows
-    public <T> T getUnchecked(@NonNull Future<T> future) {
-        return future.get();
     }
 }

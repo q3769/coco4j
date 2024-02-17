@@ -26,40 +26,16 @@
 package coco4j;
 
 import lombok.NonNull;
+import java.util.concurrent.Semaphore;
 
-import javax.annotation.Nonnull;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
+public class Semaphores {
+    private Semaphores() {}
 
-/**
- *
- */
-public class MoreRejectedExecutionHandlers {
-    private MoreRejectedExecutionHandlers() {
-    }
-
-    /**
-     * @return a {@link RejectedExecutionHandler} that uses/blocks the caller thread to re-submit the rejected task
-     *         until it is accepted, or drop the task if the executor has been shut down.
-     */
-    public static @Nonnull RejectedExecutionHandler blockingResubmitPolicy() {
-        return new BlockingResubmitPolicy();
-    }
-
-    /**
-     *
-     */
-    public static class BlockingResubmitPolicy implements RejectedExecutionHandler {
-        @Override
-        public void rejectedExecution(@NonNull Runnable r, @NonNull ThreadPoolExecutor executor) {
-            if (executor.isShutdown()) {
-                return;
-            }
-            try {
-                executor.getQueue().put(r);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+    public static void acquireInterruptibly(@NonNull Semaphore semaphore) {
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 }

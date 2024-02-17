@@ -25,38 +25,41 @@
 
 package coco4j;
 
+import lombok.NonNull;
+
 import javax.annotation.Nonnull;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
  */
-public class MoreExecutors {
-    private MoreExecutors() {
+public class RejectedExecutionHandlers {
+    private RejectedExecutionHandlers() {
     }
 
     /**
-     * @return single thread executor with unlimited work queue capacity and blocking retry execution rejection handling
-     *         policy
+     * @return a {@link RejectedExecutionHandler} that uses/blocks the caller thread to re-submit the rejected task
+     *         until it is accepted, or drop the task if the executor has been shut down.
      */
-    public static @Nonnull ThreadPoolExecutor newSingleThreadBlockingResubmitExecutor() {
-        return newSingleThreadBlockingResubmitExecutor(Integer.MAX_VALUE);
+    public static @Nonnull RejectedExecutionHandler blockingResubmitPolicy() {
+        return new BlockingResubmitPolicy();
     }
 
     /**
-     * @param workQueueCapacity
-     *         max size of work queue
-     * @return single thread executor with specified work queue capacity and blocking retry execution rejection handling
-     *         policy
+     *
      */
-    public static @Nonnull ThreadPoolExecutor newSingleThreadBlockingResubmitExecutor(int workQueueCapacity) {
-        return new ThreadPoolExecutor(1,
-                1,
-                0,
-                TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(workQueueCapacity),
-                RejectedExecutionHandlers.blockingResubmitPolicy());
+    public static class BlockingResubmitPolicy implements RejectedExecutionHandler {
+        @Override
+        public void rejectedExecution(@NonNull Runnable r, @NonNull ThreadPoolExecutor executor) {
+            if (executor.isShutdown()) {
+                return;
+            }
+            try {
+                executor.getQueue().put(r);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 }

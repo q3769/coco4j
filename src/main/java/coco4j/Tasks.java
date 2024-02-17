@@ -26,37 +26,22 @@
 package coco4j;
 
 import javax.annotation.Nonnull;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionException;
+import java.util.function.Supplier;
 
-/**
- *
- */
-public class MoreExecutors {
-    private MoreExecutors() {
+public class Tasks {
+    private Tasks() {}
+
+    public static <V> V callUnchecked(Callable<V> task) {
+        try {
+            return task.call();
+        } catch (Exception e) {
+            throw new CompletionException(e);
+        }
     }
 
-    /**
-     * @return single thread executor with unlimited work queue capacity and blocking retry execution rejection handling
-     *         policy
-     */
-    public static @Nonnull ThreadPoolExecutor newSingleThreadBlockingResubmitExecutor() {
-        return newSingleThreadBlockingResubmitExecutor(Integer.MAX_VALUE);
-    }
-
-    /**
-     * @param workQueueCapacity
-     *         max size of work queue
-     * @return single thread executor with specified work queue capacity and blocking retry execution rejection handling
-     *         policy
-     */
-    public static @Nonnull ThreadPoolExecutor newSingleThreadBlockingResubmitExecutor(int workQueueCapacity) {
-        return new ThreadPoolExecutor(1,
-                1,
-                0,
-                TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(workQueueCapacity),
-                RejectedExecutionHandlers.blockingResubmitPolicy());
+    public static @Nonnull <V> Supplier<V> supplyByUnchecked(Callable<V> callable) {
+        return () -> callUnchecked(callable);
     }
 }
