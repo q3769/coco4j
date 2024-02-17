@@ -25,20 +25,19 @@
 
 package coco4j;
 
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import lombok.NonNull;
-
+import lombok.SneakyThrows;
 import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.function.Supplier;
 
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
-
 public class CocoUtils {
-    private CocoUtils() {
-    }
+    private CocoUtils() {}
 
     public static <V> V callUnchecked(Callable<V> task) {
         try {
@@ -53,8 +52,7 @@ public class CocoUtils {
     }
 
     /**
-     * @param duration
-     *         the current thread to be sleeping for
+     * @param duration the current thread to be sleeping for
      */
     public static void sleepInterruptibly(@NonNull Duration duration) {
         try {
@@ -65,8 +63,7 @@ public class CocoUtils {
     }
 
     /**
-     * @param duration
-     *         the current thread to be sleeping for
+     * @param duration the current thread to be sleeping for
      */
     public static void sleepUninterruptibly(@NonNull Duration duration) {
         boolean interrupted = false;
@@ -95,5 +92,10 @@ public class CocoUtils {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    @SneakyThrows
+    public <T> T getUnchecked(@NonNull Future<T> future) {
+        return future.get();
     }
 }
