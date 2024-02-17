@@ -25,18 +25,16 @@
 
 package coco4j;
 
-import lombok.NonNull;
-
-import javax.annotation.Nonnull;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
+import javax.annotation.Nonnull;
+import lombok.NonNull;
 
 /**
  *
  */
 public class RejectedExecutionHandlers {
-    private RejectedExecutionHandlers() {
-    }
+    private RejectedExecutionHandlers() {}
 
     /**
      * @return a {@link RejectedExecutionHandler} that uses/blocks the caller thread to re-submit the rejected task

@@ -25,13 +25,12 @@
 
 package coco4j;
 
+import java.util.concurrent.Future;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import java.util.concurrent.Future;
 
 public class Futures {
-    private Futures() {
-    }
+    private Futures() {}
 
     @SneakyThrows
     public static <T> T getUnchecked(@NonNull Future<T> future) {

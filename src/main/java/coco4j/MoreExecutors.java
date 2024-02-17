@@ -25,17 +25,16 @@
 
 package coco4j;
 
-import javax.annotation.Nonnull;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nonnull;
 
 /**
  *
  */
 public class MoreExecutors {
-    private MoreExecutors() {
-    }
+    private MoreExecutors() {}
 
     /**
      * @return single thread executor with unlimited work queue capacity and blocking retry execution rejection handling
@@ -52,7 +51,8 @@ public class MoreExecutors {
      *         policy
      */
     public static @Nonnull ThreadPoolExecutor newSingleThreadBlockingResubmitExecutor(int workQueueCapacity) {
-        return new ThreadPoolExecutor(1,
+        return new ThreadPoolExecutor(
+                1,
                 1,
                 0,
                 TimeUnit.MILLISECONDS,

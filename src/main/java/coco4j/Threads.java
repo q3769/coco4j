@@ -55,7 +55,6 @@ public class Threads {
      * programmatically
      *
      * @param duration the current thread to sleep for
-     * @throws InterruptedException thrown to JVM runtime, un-catchable programmatically
      */
     @SneakyThrows(InterruptedException.class)
     public static void sleepInterruptiblyUncheckable(@NonNull Duration duration) {
@@ -99,7 +98,6 @@ public class Threads {
      * runtime after the sleep completes.
      *
      * @param duration the current thread to be sleeping for
-     * @throws InterruptedException thrown to JVM runtime, un-catchable programmatically
      */
     @SneakyThrows
     public static void sleepUninterruptiblyUncheckable(@NonNull Duration duration) {
