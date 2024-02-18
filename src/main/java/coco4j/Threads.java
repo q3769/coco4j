@@ -41,7 +41,7 @@ public class Threads {
      * @param duration the current thread to be sleeping for
      * @throws CompletionException if interrupted
      */
-    public static void sleepInterruptiblyUnchecked(@NonNull Duration duration) {
+    public static void sleepInterruptiblyThrowingUnchecked(@NonNull Duration duration) {
         try {
             NANOSECONDS.sleep(duration.toNanos());
         } catch (InterruptedException e) {
@@ -51,13 +51,12 @@ public class Threads {
     }
 
     /**
-     * Interruptible during sleep, in which case the InterruptedException thrown is uncheckable/un-catchable
-     * programmatically
+     * Interruptible during sleep, in which case the InterruptedException thrown is uncheckable programmatically
      *
      * @param duration the current thread to sleep for
      */
     @SneakyThrows(InterruptedException.class)
-    public static void sleepInterruptiblyUncheckable(@NonNull Duration duration) {
+    public static void sleepInterruptiblyThrowingUncheckable(@NonNull Duration duration) {
         NANOSECONDS.sleep(duration.toNanos());
     }
 
@@ -68,7 +67,7 @@ public class Threads {
      *
      * @param duration the current thread to be sleeping for
      */
-    public static void sleepUninterruptiblyUnchecked(@NonNull Duration duration) {
+    public static void sleepUninterruptiblyThrowingUnchecked(@NonNull Duration duration) {
         InterruptedException interrupted = null;
         try {
             long remainingNanos = duration.toNanos();
@@ -94,8 +93,8 @@ public class Threads {
 
     /**
      * Uninterruptible during sleep. If interruption attempts/<code>InterruptedException</code>s happened during sleep,
-     * the last of such InterruptedException, uncheckable/un-catchable programmatically, will be thrown to the JVM
-     * runtime after the sleep completes.
+     * the last of such InterruptedException, uncheckable programmatically, will be thrown to the JVM runtime after the
+     * sleep completes.
      *
      * @param duration the current thread to be sleeping for
      */

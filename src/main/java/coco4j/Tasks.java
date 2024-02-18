@@ -33,7 +33,7 @@ import javax.annotation.Nonnull;
 public class Tasks {
     private Tasks() {}
 
-    public static <V> V callUnchecked(Callable<V> task) {
+    public static <V> V callOrThrowUnchecked(Callable<V> task) {
         try {
             return task.call();
         } catch (Exception e) {
@@ -41,7 +41,7 @@ public class Tasks {
         }
     }
 
-    public static @Nonnull <V> Supplier<V> supplyByUnchecked(Callable<V> callable) {
-        return () -> callUnchecked(callable);
+    public static @Nonnull <V> Supplier<V> supplyThrowingUnchecked(Callable<V> callable) {
+        return () -> callOrThrowUnchecked(callable);
     }
 }

@@ -25,6 +25,8 @@
 
 package coco4j;
 
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -33,7 +35,18 @@ public class Futures {
     private Futures() {}
 
     @SneakyThrows
-    public static <T> T getUnchecked(@NonNull Future<T> future) {
+    public static <T> T getOrThrowUncheckable(@NonNull Future<T> future) {
         return future.get();
+    }
+
+    public static <T> T getOrThrowUnchecked(@NonNull Future<T> future) {
+        try {
+            return future.get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new CompletionException(e);
+        } catch (ExecutionException e) {
+            throw new CompletionException(e);
+        }
     }
 }

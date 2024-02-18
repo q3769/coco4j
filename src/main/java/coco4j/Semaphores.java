@@ -34,11 +34,11 @@ public class Semaphores {
     private Semaphores() {}
 
     @SneakyThrows
-    public static void acquireInterruptiblyUncheckable(@NonNull Semaphore semaphore) {
+    public static void acquireInterruptiblyOrThrowUncheckable(@NonNull Semaphore semaphore) {
         semaphore.acquire();
     }
 
-    public static void acquireInterruptiblyUnchecked(@NonNull Semaphore semaphore) {
+    public static void acquireInterruptiblyOrThrowUnchecked(@NonNull Semaphore semaphore) {
         try {
             semaphore.acquire();
         } catch (InterruptedException e) {
