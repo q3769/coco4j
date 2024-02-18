@@ -30,25 +30,22 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 
-/**
- *
- */
+/** */
 public class MoreExecutors {
     private MoreExecutors() {}
 
     /**
      * @return single thread executor with unlimited work queue capacity and blocking retry execution rejection handling
-     *         policy
+     *     policy
      */
     public static @Nonnull ThreadPoolExecutor newSingleThreadBlockingResubmitExecutor() {
         return newSingleThreadBlockingResubmitExecutor(Integer.MAX_VALUE);
     }
 
     /**
-     * @param workQueueCapacity
-     *         max size of work queue
+     * @param workQueueCapacity max size of work queue
      * @return single thread executor with specified work queue capacity and blocking retry execution rejection handling
-     *         policy
+     *     policy
      */
     public static @Nonnull ThreadPoolExecutor newSingleThreadBlockingResubmitExecutor(int workQueueCapacity) {
         return new ThreadPoolExecutor(

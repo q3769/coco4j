@@ -30,23 +30,19 @@ import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Nonnull;
 import lombok.NonNull;
 
-/**
- *
- */
+/** */
 public class RejectedExecutionHandlers {
     private RejectedExecutionHandlers() {}
 
     /**
      * @return a {@link RejectedExecutionHandler} that uses/blocks the caller thread to re-submit the rejected task
-     *         until it is accepted, or drop the task if the executor has been shut down.
+     *     until it is accepted, or drop the task if the executor has been shut down.
      */
     public static @Nonnull RejectedExecutionHandler blockingResubmitPolicy() {
         return new BlockingResubmitPolicy();
     }
 
-    /**
-     *
-     */
+    /** */
     public static class BlockingResubmitPolicy implements RejectedExecutionHandler {
         @Override
         public void rejectedExecution(@NonNull Runnable r, @NonNull ThreadPoolExecutor executor) {

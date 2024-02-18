@@ -25,10 +25,10 @@
 
 package coco4j;
 
-import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionException;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 
 public class Tasks {
     private Tasks() {}
