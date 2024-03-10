@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023 Qingtian Wang
+ * Copyright (c) 2024 Qingtian Wang
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,15 +25,19 @@
 
 package coco4j;
 
-import java.util.concurrent.Future;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import lombok.NonNull;
-import lombok.SneakyThrows;
 
-public class Futures {
-    private Futures() {}
+public class ThreadFactories {
+    private ThreadFactories() {}
 
-    @SneakyThrows
-    public static <T> T getOrThrowUncheckable(@NonNull Future<T> future) {
-        return future.get();
+    public static @NonNull ThreadFactory newPlatformThreadFactory(@NonNull String threadNamePrefix) {
+        ThreadFactory defaultThreadFactory = Executors.defaultThreadFactory();
+        return r -> {
+            Thread t = defaultThreadFactory.newThread(r);
+            t.setName(String.join("-", threadNamePrefix, t.getName()));
+            return t;
+        };
     }
 }
